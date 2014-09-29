@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Handler;
 import android.os.IBinder;
 import android.os.Looper;
+import android.os.Process;
 import android.os.RemoteException;
 import android.widget.Toast;
 
@@ -25,8 +26,8 @@ public class ClientAidl extends Service {
 
 				@Override
 				public void run() {
-					Toast.makeText(getApplicationContext(), a+"*"+b+"= "+result, Toast.LENGTH_SHORT).show();
-					
+					int pid = Process.myPid();
+					Toast.makeText(getApplicationContext(), "service pid: "+pid +" "+ a+"*"+b+"= "+result, Toast.LENGTH_SHORT).show();
 				}
 				
 			});

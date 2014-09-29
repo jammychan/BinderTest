@@ -1,6 +1,7 @@
 package com.example.testbinder;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Process;
 import android.os.IBinder;
 import android.os.Message;
@@ -10,12 +11,14 @@ import android.app.Activity;
 import android.content.ComponentName;
 import android.content.Intent;
 import android.content.ServiceConnection;
+import android.graphics.Rect;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 public class MainActivity extends Activity {
 	
@@ -23,6 +26,20 @@ public class MainActivity extends Activity {
 	
 	//we use it to communicate with the remote service
 	private Messenger messenger;
+	private Messenger messengerServerToClient = new Messenger(new Handler(){
+		public void handleMessage(Message msg){
+			switch(msg.what){
+			case MsgDefine.SEND_STR_TO_CLIENT:
+				msg.getData().setClassLoader(StringObj.class.getClassLoader());
+				String str = msg.getData().getString("str");
+				StringObj strObj = (StringObj) msg.getData().getParcelable("string");
+				Toast.makeText(MainActivity.this, strObj.str + "  " + str, Toast.LENGTH_SHORT).show();
+//				Toast.makeText(MainActivity.this, "strObj.str " + msg.arg1 + " " + msg.arg2, Toast.LENGTH_SHORT).show();
+				break;
+			}
+		}
+	});
+	
 	private boolean isBound;
 	
 	private IMultiplier multiplierService;
@@ -41,25 +58,28 @@ public class MainActivity extends Activity {
         editText = (EditText)this.findViewById(R.id.titleText);
         sendButton = (Button)this.findViewById(R.id.sendButton);
         sendButton.setOnClickListener(new OnClickListener(){
-
 			@Override
 			public void onClick(View v) {
 				sendMessage();
 			}
-        	
         });
         
         multiplyButton = (Button)this.findViewById(R.id.buttonMultiply);
         multiplyButton.setOnClickListener(new OnClickListener(){
-
 			@Override
 			public void onClick(View v) {
 				doMultiply();
 			}
-        	
         });
         
+        findViewById(R.id.register).setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View arg0) {
+			}
+		});
+        
         bindService();
+        
         bindAidlService();
     }
     
@@ -124,6 +144,18 @@ public class MainActivity extends Activity {
     	this.bindService(intent, myConnection, BIND_AUTO_CREATE);
     }
     
+    private void registerMessengerToServer(){
+    	Message msg = Message.obtain();
+    	msg.what = MsgDefine.REGISTER_MESSENGER;
+    	msg.obj = messengerServerToClient;
+    	Log.i(TAG, "messenger addr is " + messengerServerToClient.toString());
+    	try {
+			messenger.send(msg);
+		} catch (RemoteException e) {
+			e.printStackTrace();
+		}
+    }
+    
     private void sendMessage(){
     	if(isBound){
     		Message newMessage = Message.obtain();
@@ -133,6 +165,10 @@ public class MainActivity extends Activity {
     		data.putString("TITLE", editText.getText().toString()+"sender pid: "+pid);
     		
     		newMessage.setData(data);
+    		newMessage.what = MsgDefine.SEND_STR_TO_SERVER;
+    		Rect rect = new Rect();
+    		rect.left = 1028;
+    		newMessage.obj = rect;
     		
     		try {
 				messenger.send(newMessage);
@@ -147,8 +183,10 @@ public class MainActivity extends Activity {
 
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder binder) {
+			Log.i(TAG, "binder addr is "+binder.toString());
 			messenger = new Messenger(binder);
 			isBound = true;
+			registerMessengerToServer();
 		}
 
 		@Override
@@ -156,7 +194,5 @@ public class MainActivity extends Activity {
 			messenger = null;
 			isBound = false;
 		}
-    	
     };
-    
 }
