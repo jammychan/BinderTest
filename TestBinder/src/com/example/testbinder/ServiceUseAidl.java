@@ -34,6 +34,13 @@ public class ServiceUseAidl extends Service {
 
 		@Override
 		public int send(AidlObj obj) throws RemoteException {
+			// 同步
+			try {
+				Thread.sleep(3000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			return obj.id * 3;
 		}
 	};
