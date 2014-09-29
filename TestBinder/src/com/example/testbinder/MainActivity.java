@@ -2,6 +2,7 @@ package com.example.testbinder;
 
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Parcelable;
 import android.os.Process;
 import android.os.IBinder;
 import android.os.Message;
@@ -222,7 +223,7 @@ public class MainActivity extends Activity {
     	if (isMessengerBound){
     		Message msg = Message.obtain();
     		msg.what = MsgDefine.SEND_SYSTEM_PARCEL_CLASS_TO_ANOTHER_PROCESS;
-    		msg.obj = new Rect(1, 2, 3, 4);	
+    		msg.obj = new Rect(1, 2, 3, 4);	//public final class Rect implements Parcelable...
 
     		// msg.obj = "1234"; 				
     		// fail, not parcel object 
