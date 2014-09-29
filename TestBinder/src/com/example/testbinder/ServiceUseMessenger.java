@@ -27,7 +27,7 @@ public class ServiceUseMessenger extends Service {
 			switch(msg.what){
 			case MsgDefine.REGISTER_MESSENGER:
 				sendToClientMessenger = (Messenger) msg.obj;
-				Log.i(TAG, "messenger addr is " + sendToClientMessenger.toString());
+				Log.i(TAG, "another process messenger addr is " + sendToClientMessenger.toString());
 				break;
 			case MsgDefine.SEND_STR_TO_SERVER:
 				Bundle data = msg.getData();
@@ -60,7 +60,7 @@ public class ServiceUseMessenger extends Service {
 	@Override
 	public IBinder onBind(Intent arg0) {
 		IBinder ibinder = messenger.getBinder(); 
-		Log.i(TAG, "binder addr is "+ibinder.toString());
+		Log.i(TAG, "another process binder addr is "+ibinder.toString());
 		return ibinder;
 	}
 }

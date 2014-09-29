@@ -30,6 +30,7 @@ public class ServiceSameProcess extends Service {
 	@Override
 	public IBinder onBind(Intent arg0) {
 		IBinder binder = messenger.getBinder();
+		Log.i(TAG, "same process binder addr is  " + binder.toString());
 		return binder;
 	}
 }

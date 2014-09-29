@@ -139,6 +139,7 @@ public class MainActivity extends Activity {
     private ServiceConnection mySameProcessConnection = new ServiceConnection(){
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder binder) {
+			Log.i(TAG, "same process binder addr is " + binder.toString());
 			messengerSameProcessToServer = new Messenger(binder);
 			isSameProcessBound = true;
 			registerMessengerToSameProcessService();
@@ -160,7 +161,7 @@ public class MainActivity extends Activity {
     private ServiceConnection myConnection = new ServiceConnection(){
 		@Override
 		public void onServiceConnected(ComponentName className, IBinder binder) {
-			Log.i(TAG, "binder addr is "+binder.toString());
+			Log.i(TAG, "another process binder addr is "+binder.toString());
 			messengerClientToServer = new Messenger(binder);
 			isMessengerBound = true;
 			registerMessengerToServer();
@@ -178,7 +179,7 @@ public class MainActivity extends Activity {
     	Message msg = Message.obtain();
     	msg.what = MsgDefine.REGISTER_MESSENGER;
     	msg.obj = messengerServerToClient;
-    	Log.i(TAG, "messenger addr is " + messengerServerToClient.toString());
+    	Log.i(TAG, "another process messenger addr is " + messengerServerToClient.toString());
     	try {
 			messengerClientToServer.send(msg);
 		} catch (RemoteException e) {
