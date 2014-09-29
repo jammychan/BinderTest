@@ -222,7 +222,15 @@ public class MainActivity extends Activity {
     	if (isMessengerBound){
     		Message msg = Message.obtain();
     		msg.what = MsgDefine.SEND_SYSTEM_PARCEL_CLASS_TO_ANOTHER_PROCESS;
-    		msg.obj = new Rect(1, 2, 3, 4);
+    		msg.obj = new Rect(1, 2, 3, 4);	
+
+    		// msg.obj = "1234"; 				
+    		// fail, not parcel object 
+    		// should use msg.getData().putString("key", "1234");
+    		
+    		// msg.obj = new StringObj("1234");
+    		// fail, not system parcel objcet
+    		// should use msg.getData().putParcelable("key", new StringObj("1234"));
     		try {
 				messengerClientToServer.send(msg);
 			} catch (RemoteException e) {
