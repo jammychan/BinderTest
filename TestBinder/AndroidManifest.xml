@@ -32,12 +32,10 @@
                 <action android:name="com.example.testbinder.ServiceUseMessenger"></action>
             </intent-filter>
         </service>
-        <!-- 
-            android:process=":client_aidl_service"
-            android:exported="true"
-         -->
         <service
             android:name="com.example.testbinder.ServiceUseAidl"
+            android:process=":client_aidl_service"
+            android:exported="true"
             >
             <intent-filter >
                 <action android:name="com.example.testbinder.ServiceUseAidl"></action>
