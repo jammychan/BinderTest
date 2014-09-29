@@ -13,17 +13,16 @@ import android.util.Log;
 import android.widget.Toast;
 import android.os.Process;
 
-public class ClientService extends Service {
-	private static final String TAG = "ClientService";
+public class ServiceUseMessenger extends Service {
+	private static final String TAG = "ServiceUseMessenger";
 	
 	Messenger sendToClientMessenger = null;
 	/**
 	 * the service receives here the messages from a remote process
 	 * @author ado
-	 *
 	 */
+	private final Messenger messenger = new Messenger(new IncomingHandler());
 	private class IncomingHandler extends Handler{
-
 		public void handleMessage(Message msg){
 			switch(msg.what){
 			case MsgDefine.REGISTER_MESSENGER:
@@ -35,30 +34,28 @@ public class ClientService extends Service {
 				String title = data.getString("TITLE");
 				int pid = Process.myPid();
 				String s = title + "\nservice pid: "+pid;
-				s = s + ((Rect)msg.obj).left;
 				Log.i(TAG, s);
 				try {
 					if (null != sendToClientMessenger){
 						Message msgToClient = Message.obtain();
 						msgToClient.what = MsgDefine.SEND_STR_TO_CLIENT;
-						msgToClient.arg1 = 12;
-						msgToClient.arg2 = 8;
-//						msgToClient.obj = new StringObj(s);
-						msgToClient.getData().putString("str", "ocean sky");
-						msgToClient.getData().putParcelable("string", new StringObj(s));
+						msgToClient.getData().putParcelable(MsgDefine.PARCEL_STRING_KEY, new StringObj(s));
 						sendToClientMessenger.send(msgToClient);
 					}
 				} catch (RemoteException e) {
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			break;
+			case MsgDefine.SEND_SYSTEM_PARCEL_CLASS_TO_ANOTHER_PROCESS:
+				Rect rect = (Rect) msg.obj;
+				String str = "" + rect.left + " " + rect.right + " " + rect.top + " " + rect.bottom;
+				Toast.makeText(getApplicationContext(), str, Toast.LENGTH_SHORT).show();
+				break;
 			}
 		}
 	}
 
-	private final Messenger messenger = new Messenger(new IncomingHandler());
-	
+
 	//the IBinder returned here is used by the messenger to communicate with the associated handler
 	@Override
 	public IBinder onBind(Intent arg0) {
@@ -66,5 +63,4 @@ public class ClientService extends Service {
 		Log.i(TAG, "binder addr is "+ibinder.toString());
 		return ibinder;
 	}
-
 }

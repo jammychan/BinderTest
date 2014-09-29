@@ -9,7 +9,7 @@ import android.os.Process;
 import android.os.RemoteException;
 import android.widget.Toast;
 
-public class ClientAidl extends Service {
+public class ServiceUseAidl extends Service {
 
 	@Override
 	public IBinder onBind(Intent intent) {
@@ -29,10 +29,7 @@ public class ClientAidl extends Service {
 					int pid = Process.myPid();
 					Toast.makeText(getApplicationContext(), "service pid: "+pid +" "+ a+"*"+b+"= "+result, Toast.LENGTH_SHORT).show();
 				}
-				
 			});
-			
 		}
 	};
-
 }
