@@ -72,7 +72,8 @@ public class MainActivity extends Activity {
         multiplyButton.setOnClickListener(new OnClickListener(){
 			@Override
 			public void onClick(View v) {
-				doMultiply();
+//				doMultiply();
+				sendAidlObj();
 			}
         });
         
@@ -246,6 +247,17 @@ public class MainActivity extends Activity {
     	if(isAidlbound){
     		try {
 				multiplierService.multiply(5, 7);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+    	}
+    }
+    
+    private void sendAidlObj(){
+    	if(isAidlbound){
+    		try {
+				int ret = multiplierService.send(new AidlObj(123, "msg"));
+				Toast.makeText(this, "ret is " + ret, Toast.LENGTH_SHORT).show();
 			} catch (RemoteException e) {
 				e.printStackTrace();
 			}

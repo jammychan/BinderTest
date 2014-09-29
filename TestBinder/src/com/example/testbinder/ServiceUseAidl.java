@@ -31,5 +31,10 @@ public class ServiceUseAidl extends Service {
 				}
 			});
 		}
+
+		@Override
+		public int send(AidlObj obj) throws RemoteException {
+			return obj.id * 3;
+		}
 	};
 }
