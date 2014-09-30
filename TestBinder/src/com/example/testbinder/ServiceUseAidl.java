@@ -7,12 +7,16 @@ import android.os.IBinder;
 import android.os.Looper;
 import android.os.Process;
 import android.os.RemoteException;
+import android.util.Log;
 import android.widget.Toast;
 
 public class ServiceUseAidl extends Service {
 
+	private static final String TAG = "ServiceUseAidl";
+
 	@Override
 	public IBinder onBind(Intent intent) {
+		Log.i(TAG, "AIDL binder addr is " + binder.toString());
 		return binder;
 	}
 	

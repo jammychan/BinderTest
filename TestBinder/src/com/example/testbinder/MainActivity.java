@@ -118,6 +118,7 @@ public class MainActivity extends Activity {
     private ServiceConnection myAidlConnection = new ServiceConnection(){
 		@Override
 		public void onServiceConnected(ComponentName name, IBinder service) {
+			Log.i(TAG, "AIDL binder addr is " + service.toString());
 			multiplierService = IMultiplier.Stub.asInterface(service);
 			isAidlbound = true;
 		}
